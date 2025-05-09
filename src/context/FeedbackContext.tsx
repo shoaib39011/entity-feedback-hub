@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { User } from './AuthContext';
 
 export type FeedbackCategory = 'complaint' | 'suggestion' | 'compliment';
 
@@ -8,7 +9,9 @@ export type FeedbackStatus = 'pending' | 'reviewed' | 'resolved';
 export type Feedback = {
   id: string;
   userId: string;
+  username: string; // Add username for easier identification
   entity: string;
+  company: string; // Add company association
   category: FeedbackCategory;
   description: string;
   contactEmail: string;
@@ -22,6 +25,7 @@ type FeedbackContextType = {
   feedbacks: Feedback[];
   addFeedback: (feedback: Omit<Feedback, 'id' | 'createdAt' | 'status' | 'resolvedAt' | 'adminResponse'>) => void;
   getUserFeedbacks: (userId: string) => Feedback[];
+  getCompanyFeedbacks: (company: string) => Feedback[];
   updateFeedbackStatus: (feedbackId: string, status: FeedbackStatus, adminResponse?: string) => void;
 };
 
@@ -44,7 +48,9 @@ export const FeedbackProvider = ({ children }: FeedbackProviderProps) => {
     {
       id: '1',
       userId: 'user1',
+      username: 'john_doe',
       entity: 'IT Department',
+      company: 'ABC Organization',
       category: 'complaint',
       description: 'My computer has been very slow lately.',
       contactEmail: 'user1@example.com',
@@ -56,7 +62,9 @@ export const FeedbackProvider = ({ children }: FeedbackProviderProps) => {
     {
       id: '2',
       userId: 'user2',
+      username: 'jane_smith',
       entity: 'HR Department',
+      company: 'XYZ Company',
       category: 'compliment',
       description: 'The new benefits package is excellent!',
       contactEmail: 'user2@example.com',
@@ -68,7 +76,9 @@ export const FeedbackProvider = ({ children }: FeedbackProviderProps) => {
     {
       id: '3',
       userId: 'user1',
+      username: 'john_doe',
       entity: 'Cafeteria',
+      company: 'XXX Inc',
       category: 'suggestion',
       description: 'Could we have more vegan options?',
       contactEmail: 'user1@example.com',
@@ -95,6 +105,10 @@ export const FeedbackProvider = ({ children }: FeedbackProviderProps) => {
     return feedbacks.filter(feedback => feedback.userId === userId);
   };
 
+  const getCompanyFeedbacks = (company: string) => {
+    return feedbacks.filter(feedback => feedback.company === company);
+  };
+
   const updateFeedbackStatus = (feedbackId: string, status: FeedbackStatus, adminResponse?: string) => {
     setFeedbacks(feedbacks.map(feedback => {
       if (feedback.id === feedbackId) {
@@ -110,7 +124,7 @@ export const FeedbackProvider = ({ children }: FeedbackProviderProps) => {
   };
 
   return (
-    <FeedbackContext.Provider value={{ feedbacks, addFeedback, getUserFeedbacks, updateFeedbackStatus }}>
+    <FeedbackContext.Provider value={{ feedbacks, addFeedback, getUserFeedbacks, getCompanyFeedbacks, updateFeedbackStatus }}>
       {children}
     </FeedbackContext.Provider>
   );

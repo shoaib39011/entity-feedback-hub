@@ -1,19 +1,30 @@
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import Layout from "@/components/layout/Layout";
+
+// Available companies
+const companies = [
+  "ABC Organization",
+  "XYZ Company",
+  "XXX Inc",
+  "DEF Corporation", 
+  "GHI Enterprises"
+];
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"user" | "admin">("user");
+  const [company, setCompany] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -30,8 +41,17 @@ const Login = () => {
       return;
     }
     
+    if (role === "admin" && !company) {
+      toast({
+        title: "Error",
+        description: "Please select a company for admin login",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     // In a real app, you would validate credentials against a server
-    login(username, password, role);
+    login(username, password, role, company);
     
     toast({
       title: "Success",
@@ -97,9 +117,34 @@ const Login = () => {
                 </RadioGroup>
               </div>
               
+              {role === "admin" && (
+                <div className="space-y-2">
+                  <Label htmlFor="adminCompany">Company</Label>
+                  <Select value={company} onValueChange={setCompany}>
+                    <SelectTrigger id="adminCompany">
+                      <SelectValue placeholder="Select company to manage" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {companies.map((companyName) => (
+                        <SelectItem key={companyName} value={companyName}>
+                          {companyName}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              
               <Button type="submit" className="w-full">
                 Login
               </Button>
+              
+              <div className="text-center text-sm">
+                Don't have an account?{" "}
+                <Link to="/signup" className="text-primary hover:underline">
+                  Sign up
+                </Link>
+              </div>
             </form>
           </CardContent>
         </Card>

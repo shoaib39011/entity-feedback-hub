@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { Link } from "react-router-dom";
-import { User } from "lucide-react";
+import { User, Building } from "lucide-react";
 
 const Header = () => {
   const { isAuthenticated, user, logout, isAdmin } = useAuth();
@@ -17,9 +17,15 @@ const Header = () => {
         <div className="flex items-center space-x-4">
           {isAuthenticated ? (
             <>
-              <span className="text-sm text-gray-600">
-                Welcome, {user?.username}
-              </span>
+              <div className="flex items-center text-sm text-gray-600">
+                <span className="mr-1">Welcome, {user?.username}</span>
+                {user?.company && (
+                  <div className="flex items-center ml-2">
+                    <Building className="h-3 w-3 mr-1" />
+                    <span>{user.company}</span>
+                  </div>
+                )}
+              </div>
               {isAdmin ? (
                 <Link to="/admin">
                   <Button variant="outline" size="sm">
@@ -38,12 +44,19 @@ const Header = () => {
               </Button>
             </>
           ) : (
-            <Link to="/login">
-              <Button>
-                <User className="h-4 w-4 mr-2" />
-                Login
-              </Button>
-            </Link>
+            <div className="flex gap-2">
+              <Link to="/login">
+                <Button variant="outline">
+                  <User className="h-4 w-4 mr-2" />
+                  Login
+                </Button>
+              </Link>
+              <Link to="/signup">
+                <Button>
+                  Sign Up
+                </Button>
+              </Link>
+            </div>
           )}
         </div>
       </div>

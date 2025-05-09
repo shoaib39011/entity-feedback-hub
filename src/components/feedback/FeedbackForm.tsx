@@ -36,7 +36,7 @@ const FeedbackForm = ({ onSuccess }: FeedbackFormProps) => {
   const [entity, setEntity] = useState("");
   const [category, setCategory] = useState<FeedbackCategory | "">("");
   const [description, setDescription] = useState("");
-  const [contactEmail, setContactEmail] = useState("");
+  const [contactEmail, setContactEmail] = useState(user?.email || "");
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,7 +70,9 @@ const FeedbackForm = ({ onSuccess }: FeedbackFormProps) => {
     
     addFeedback({
       userId: user.id,
+      username: user.username,
       entity,
+      company: user.company || "",
       category: category as FeedbackCategory,
       description,
       contactEmail,
@@ -85,7 +87,6 @@ const FeedbackForm = ({ onSuccess }: FeedbackFormProps) => {
     setEntity("");
     setCategory("");
     setDescription("");
-    setContactEmail("");
     
     // Call success callback
     if (onSuccess) {

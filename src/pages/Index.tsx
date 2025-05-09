@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -26,11 +27,16 @@ const Index = () => {
               </Link>
             </Button>
           ) : (
-            <div className="flex justify-center gap-4">
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button asChild size="lg">
                 <Link to="/login">
                   <MessageSquare className="mr-2 h-5 w-5" />
-                  Login to Get Started
+                  Login
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <Link to="/signup">
+                  Sign Up to Get Started
                 </Link>
               </Button>
             </div>
