@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // In a real app, this would validate against a backend
     // For demo purposes, we'll simulate a successful signup
     const userId = Math.random().toString(36).substring(2, 10);
-    const newUser = { 
+    const newUser: User = { 
       id: userId, 
       username, 
       email,
@@ -86,7 +86,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     } else {
       // If user not found, create a temporary one (for demo purposes)
       const userId = Math.random().toString(36).substring(2, 10);
-      setUser({ id: userId, username, email: '', role, company });
+      const tempUser: User = { 
+        id: userId, 
+        username, 
+        email: '', 
+        role: role as 'user' | 'admin', 
+        company 
+      };
+      setUser(tempUser);
     }
   };
 
