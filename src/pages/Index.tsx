@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
 import Layout from "@/components/layout/Layout";
-import { BadgeAlert, BadgeCheck, BadgeInfo, MessageSquare } from "lucide-react";
+import { BadgeAlert, BadgeCheck, BadgeInfo, MessageSquare, Clock } from "lucide-react";
 
 const Index = () => {
   const { isAuthenticated, isAdmin } = useAuth();
