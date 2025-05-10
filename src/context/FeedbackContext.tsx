@@ -26,6 +26,7 @@ type FeedbackContextType = {
   addFeedback: (feedback: Omit<Feedback, 'id' | 'createdAt' | 'status' | 'resolvedAt' | 'adminResponse'>) => void;
   getUserFeedbacks: (userId: string) => Feedback[];
   getCompanyFeedbacks: (company: string) => Feedback[];
+  getAllFeedbacks: () => Feedback[]; // New function to get all feedbacks
   updateFeedbackStatus: (feedbackId: string, status: FeedbackStatus, adminResponse?: string) => void;
 };
 
@@ -108,6 +109,10 @@ export const FeedbackProvider = ({ children }: FeedbackProviderProps) => {
   const getCompanyFeedbacks = (company: string) => {
     return feedbacks.filter(feedback => feedback.company === company);
   };
+  
+  const getAllFeedbacks = () => {
+    return [...feedbacks].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  };
 
   const updateFeedbackStatus = (feedbackId: string, status: FeedbackStatus, adminResponse?: string) => {
     setFeedbacks(feedbacks.map(feedback => {
@@ -124,7 +129,7 @@ export const FeedbackProvider = ({ children }: FeedbackProviderProps) => {
   };
 
   return (
-    <FeedbackContext.Provider value={{ feedbacks, addFeedback, getUserFeedbacks, getCompanyFeedbacks, updateFeedbackStatus }}>
+    <FeedbackContext.Provider value={{ feedbacks, addFeedback, getUserFeedbacks, getCompanyFeedbacks, getAllFeedbacks, updateFeedbackStatus }}>
       {children}
     </FeedbackContext.Provider>
   );

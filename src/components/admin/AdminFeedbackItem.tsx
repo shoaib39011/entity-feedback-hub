@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { BadgeAlert, BadgeCheck, BadgeInfo, Calendar, Clock, Mail, User } from "lucide-react";
+import { BadgeAlert, BadgeCheck, BadgeInfo, Calendar, Clock, Mail, User, Building } from "lucide-react";
 
 interface AdminFeedbackItemProps {
   feedback: Feedback;
@@ -81,10 +81,15 @@ const AdminFeedbackItem = ({ feedback }: AdminFeedbackItemProps) => {
             <h3 className="text-lg font-medium">{feedback.entity}</h3>
             {getStatusBadge(feedback.status)}
           </div>
-          <div className="flex items-center text-sm text-gray-500 mt-1">
+          <div className="flex items-center text-sm text-gray-500 mt-1 flex-wrap gap-y-1">
             <div className="flex items-center">
               {getCategoryIcon(feedback.category)}
               <span className="ml-1 capitalize">{feedback.category}</span>
+            </div>
+            <span className="mx-2">•</span>
+            <div className="flex items-center">
+              <Building className="h-3 w-3 mr-1" />
+              <span className="font-medium text-blue-600">{feedback.company}</span>
             </div>
             <span className="mx-2">•</span>
             <div className="flex items-center">

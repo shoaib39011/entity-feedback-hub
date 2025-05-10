@@ -36,7 +36,15 @@ type AuthProviderProps = {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([
-    // Pre-populated admin users for each company
+    // Pre-populated super admin user
+    { 
+      id: 'superadmin', 
+      username: 'admin', 
+      email: 'admin@feedbackhub.com',
+      role: 'admin',
+      // No company for super admin - can see all feedbacks
+    },
+    // Pre-populated company admins
     { 
       id: 'admin1', 
       username: 'admin_abc', 
