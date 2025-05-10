@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import Layout from "@/components/layout/Layout";
 
-// Available companies
+// Available companies for user signup only
 const companies = [
   "ABC Organization",
   "XYZ Company",
@@ -41,17 +41,18 @@ const Login = () => {
       return;
     }
     
-    if (role === "admin" && !company) {
+    // Company is only needed for users, not for admin
+    if (role === "user" && !company) {
       toast({
         title: "Error",
-        description: "Please select a company for admin login",
+        description: "Please select your company",
         variant: "destructive",
       });
       return;
     }
     
     // In a real app, you would validate credentials against a server
-    login(username, password, role, company);
+    login(username, password, role, role === "user" ? company : undefined);
     
     toast({
       title: "Success",
@@ -117,12 +118,12 @@ const Login = () => {
                 </RadioGroup>
               </div>
               
-              {role === "admin" && (
+              {role === "user" && (
                 <div className="space-y-2">
-                  <Label htmlFor="adminCompany">Company</Label>
+                  <Label htmlFor="userCompany">Company</Label>
                   <Select value={company} onValueChange={setCompany}>
-                    <SelectTrigger id="adminCompany">
-                      <SelectValue placeholder="Select company to manage" />
+                    <SelectTrigger id="userCompany">
+                      <SelectValue placeholder="Select your company" />
                     </SelectTrigger>
                     <SelectContent>
                       {companies.map((companyName) => (

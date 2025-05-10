@@ -7,7 +7,8 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { BadgeAlert, BadgeCheck, BadgeInfo, Calendar, Clock, Mail, User, Building } from "lucide-react";
+import { BadgeAlert, BadgeCheck, BadgeInfo, Calendar, Clock, Mail, User, Building, Forward } from "lucide-react";
+import { companyEmails, useAuth } from "@/context/AuthContext";
 
 interface AdminFeedbackItemProps {
   feedback: Feedback;
@@ -15,6 +16,7 @@ interface AdminFeedbackItemProps {
 
 const AdminFeedbackItem = ({ feedback }: AdminFeedbackItemProps) => {
   const { updateFeedbackStatus } = useFeedback();
+  const { getCompanyEmail } = useAuth();
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [response, setResponse] = useState(feedback.adminResponse || "");
@@ -37,6 +39,24 @@ const AdminFeedbackItem = ({ feedback }: AdminFeedbackItemProps) => {
       description: `Feedback marked as ${newStatus}`,
     });
     setDialogOpen(false);
+  };
+
+  const handleForwardToCompany = () => {
+    const companyEmail = getCompanyEmail(feedback.company);
+    
+    // In a real app, this would send an email
+    // For demo purposes, we'll just show a toast notification
+    toast({
+      title: "Forwarded to Company",
+      description: `Feedback forwarded to ${feedback.company} (${companyEmail})`,
+    });
+    
+    // Mark as reviewed
+    updateFeedbackStatus(
+      feedback.id, 
+      "reviewed", 
+      `Forwarded to company on ${new Date().toLocaleDateString()}`
+    );
   };
   
   const getCategoryColor = (category: string) => {
@@ -71,6 +91,8 @@ const AdminFeedbackItem = ({ feedback }: AdminFeedbackItemProps) => {
         return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-300">Resolved</Badge>;
     }
   };
+
+  const companyEmail = getCompanyEmail(feedback.company);
   
   return (
     <Card className="overflow-hidden">
@@ -108,11 +130,19 @@ const AdminFeedbackItem = ({ feedback }: AdminFeedbackItemProps) => {
         <div className="bg-slate-50 p-3 rounded-md">
           <p className="text-gray-700">{feedback.description}</p>
         </div>
-        <div className="mt-3 flex items-center text-sm">
-          <Mail className="h-4 w-4 mr-1 text-gray-500" />
-          <a href={`mailto:${feedback.contactEmail}`} className="text-blue-600 hover:underline">
-            {feedback.contactEmail}
-          </a>
+        <div className="mt-3 flex items-center justify-between">
+          <div className="flex items-center text-sm">
+            <Mail className="h-4 w-4 mr-1 text-gray-500" />
+            <a href={`mailto:${feedback.contactEmail}`} className="text-blue-600 hover:underline">
+              {feedback.contactEmail}
+            </a>
+          </div>
+          <div className="flex items-center text-sm">
+            <Mail className="h-4 w-4 mr-1 text-gray-500" />
+            <a href={`mailto:${companyEmail}`} className="text-blue-600 hover:underline">
+              {companyEmail}
+            </a>
+          </div>
         </div>
         {feedback.adminResponse && (
           <div className="mt-4 border-t pt-3">
@@ -127,10 +157,18 @@ const AdminFeedbackItem = ({ feedback }: AdminFeedbackItemProps) => {
           </div>
         )}
       </CardContent>
-      <CardFooter className="p-4 pt-0">
+      <CardFooter className="p-4 pt-0 flex flex-wrap gap-2">
+        <Button 
+          variant="outline" 
+          className="flex-1 bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100"
+          onClick={handleForwardToCompany}
+        >
+          <Forward className="h-4 w-4 mr-1" /> Forward to Company
+        </Button>
+        
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="w-full">
+            <Button className="flex-1">
               {feedback.status === "pending" ? "Respond" : "Update Response"}
             </Button>
           </DialogTrigger>

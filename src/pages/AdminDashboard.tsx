@@ -28,16 +28,10 @@ const AdminDashboard = () => {
     return <Navigate to="/dashboard" />;
   }
   
-  // If user is a company admin, show only that company's feedbacks
-  // If user is a super admin (no company), show all feedbacks or filtered by selected company
-  const isSuperAdmin = !user?.company;
+  // Central admin sees all feedbacks, filtered by selected company if applicable
+  const adminFeedbacks = selectedCompany ? getCompanyFeedbacks(selectedCompany) : getAllFeedbacks();
   
-  // Get feedbacks based on admin type and selected filter
-  const adminFeedbacks = isSuperAdmin 
-    ? (selectedCompany ? getCompanyFeedbacks(selectedCompany) : getAllFeedbacks())
-    : (user?.company ? getCompanyFeedbacks(user.company) : []);
-  
-  // Get unique companies for filtering (for super admin)
+  // Get unique companies for filtering
   const companies = Array.from(new Set(feedbacks.map(f => f.company))).sort();
   
   // Filter feedbacks based on active tab and search term
@@ -79,33 +73,24 @@ const AdminDashboard = () => {
           <div>
             <h1 className="text-3xl font-bold">Admin Dashboard</h1>
             <div className="flex items-center mt-2 text-gray-600">
-              {user?.company ? (
-                <>
-                  <Building className="h-4 w-4 mr-1" />
-                  <span>{user.company} Admin</span>
-                </>
-              ) : (
-                <span className="text-blue-600 font-medium">Super Admin - All Organizations</span>
-              )}
+              <span className="text-blue-600 font-medium">Central Admin - All Companies</span>
             </div>
           </div>
           
           <div className="flex flex-col sm:flex-row gap-3">
-            {isSuperAdmin && (
-              <div className="w-full sm:w-64">
-                <Select value={selectedCompany} onValueChange={setSelectedCompany}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Filter by company" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All Companies</SelectItem>
-                    {companies.map(company => (
-                      <SelectItem key={company} value={company}>{company}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
+            <div className="w-full sm:w-64">
+              <Select value={selectedCompany} onValueChange={setSelectedCompany}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Filter by company" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All Companies</SelectItem>
+                  {companies.map(company => (
+                    <SelectItem key={company} value={company}>{company}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             
             <div className="relative w-full sm:w-64">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />

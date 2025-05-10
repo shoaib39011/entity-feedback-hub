@@ -9,6 +9,15 @@ export type User = {
   company?: string; // Company association for the user
 };
 
+// Mock company emails for forwarding
+export const companyEmails: Record<string, string> = {
+  'ABC Organization': 'admin@abcorg.com',
+  'XYZ Company': 'admin@xyzcompany.com',
+  'XXX Inc': 'admin@xxxinc.com',
+  'DEF Corporation': 'admin@defcorp.com',
+  'GHI Enterprises': 'admin@ghient.com'
+};
+
 type AuthContextType = {
   user: User | null;
   login: (username: string, password: string, role: 'user' | 'admin', company?: string) => void;
@@ -17,6 +26,7 @@ type AuthContextType = {
   isAuthenticated: boolean;
   isAdmin: boolean;
   users: User[]; // Store all users (for demo purposes)
+  getCompanyEmail: (company: string) => string;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -44,26 +54,26 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       role: 'admin',
       // No company for super admin - can see all feedbacks
     },
-    // Pre-populated company admins
+    // Pre-populated company users
     { 
-      id: 'admin1', 
-      username: 'admin_abc', 
-      email: 'admin@abcorg.com',
-      role: 'admin', 
+      id: 'user1', 
+      username: 'user_abc', 
+      email: 'user@abcorg.com',
+      role: 'user', 
       company: 'ABC Organization' 
     },
     { 
-      id: 'admin2', 
-      username: 'admin_xyz', 
-      email: 'admin@xyzcompany.com',
-      role: 'admin', 
+      id: 'user2', 
+      username: 'user_xyz', 
+      email: 'user@xyzcompany.com',
+      role: 'user', 
       company: 'XYZ Company' 
     },
     { 
-      id: 'admin3', 
-      username: 'admin_xxx', 
-      email: 'admin@xxxinc.com',
-      role: 'admin', 
+      id: 'user3', 
+      username: 'user_xxx', 
+      email: 'user@xxxinc.com',
+      role: 'user', 
       company: 'XXX Inc' 
     },
   ]);
@@ -112,8 +122,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const isAuthenticated = user !== null;
   const isAdmin = user?.role === 'admin';
 
+  // Helper function to get company email
+  const getCompanyEmail = (company: string): string => {
+    return companyEmails[company] || 'contact@company.com';
+  };
+
   return (
-    <AuthContext.Provider value={{ user, users, login, signup, logout, isAuthenticated, isAdmin }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      users, 
+      login, 
+      signup, 
+      logout, 
+      isAuthenticated, 
+      isAdmin, 
+      getCompanyEmail 
+    }}>
       {children}
     </AuthContext.Provider>
   );
