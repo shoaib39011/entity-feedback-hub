@@ -13,7 +13,7 @@ const AdminDashboard = () => {
   const { feedbacks, getCompanyFeedbacks, getAllFeedbacks } = useFeedback();
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("all");
-  const [selectedCompany, setSelectedCompany] = useState<string>("");
+  const [selectedCompany, setSelectedCompany] = useState<string>("all");
   
   // Redirect if not authenticated or not an admin
   if (!isAuthenticated) {
@@ -25,7 +25,9 @@ const AdminDashboard = () => {
   }
   
   // Central admin sees all feedbacks, filtered by selected company if applicable
-  const adminFeedbacks = selectedCompany ? getCompanyFeedbacks(selectedCompany) : getAllFeedbacks();
+  const adminFeedbacks = selectedCompany && selectedCompany !== "all" 
+    ? getCompanyFeedbacks(selectedCompany) 
+    : getAllFeedbacks();
   
   // Get unique companies for filtering
   const companies = Array.from(new Set(feedbacks.map(f => f.company))).sort();
