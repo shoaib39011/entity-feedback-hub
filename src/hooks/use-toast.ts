@@ -1,3 +1,4 @@
+
 import * as React from "react"
 
 import type {
@@ -53,9 +54,9 @@ interface State {
   toasts: ToasterToast[]
 }
 
-const toastTimeouts = new Map()
+const toastTimeouts = new Map<string, NodeJS.Timeout>()
 
-const addToRemoveQueue = (toastId) => {
+const addToRemoveQueue = (toastId: string) => {
   if (toastTimeouts.has(toastId)) {
     return
   }
@@ -71,7 +72,7 @@ const addToRemoveQueue = (toastId) => {
   toastTimeouts.set(toastId, timeout)
 }
 
-export const reducer = (state, action) => {
+export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "ADD_TOAST":
       return {
@@ -126,21 +127,21 @@ export const reducer = (state, action) => {
   }
 }
 
-const listeners = []
+const listeners: Array<(state: State) => void> = []
 
-let memoryState = { toasts: [] }
+let memoryState: State = { toasts: [] }
 
-function dispatch(action) {
+function dispatch(action: Action) {
   memoryState = reducer(memoryState, action)
   listeners.forEach((listener) => {
     listener(memoryState)
   })
 }
 
-function toast(props) {
+function toast(props: Omit<ToasterToast, "id">) {
   const id = genId()
 
-  const update = (props) =>
+  const update = (props: ToasterToast) =>
     dispatch({
       type: "UPDATE_TOAST",
       toast: { ...props, id },
@@ -153,7 +154,7 @@ function toast(props) {
       ...props,
       id,
       open: true,
-      onOpenChange: (open) => {
+      onOpenChange: (open: boolean) => {
         if (!open) dismiss()
       },
     },
@@ -167,7 +168,7 @@ function toast(props) {
 }
 
 function useToast() {
-  const [state, setState] = React.useState(memoryState)
+  const [state, setState] = React.useState<State>(memoryState)
 
   React.useEffect(() => {
     listeners.push(setState)
@@ -182,7 +183,7 @@ function useToast() {
   return {
     ...state,
     toast,
-    dismiss: (toastId) => dispatch({ type: "DISMISS_TOAST", toastId }),
+    dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
   }
 }
 
