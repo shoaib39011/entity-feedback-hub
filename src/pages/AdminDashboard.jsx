@@ -13,7 +13,7 @@ const AdminDashboard = () => {
   const { feedbacks, getCompanyFeedbacks, getAllFeedbacks } = useFeedback();
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("all");
-  const [selectedCompany, setSelectedCompany] = useState<string>("all");
+  const [selectedCompany, setSelectedCompany] = useState("all");
   
   // Redirect if not authenticated or not an admin
   if (!isAuthenticated) {

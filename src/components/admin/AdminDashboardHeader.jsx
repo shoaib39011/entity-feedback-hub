@@ -5,21 +5,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 
-interface AdminDashboardHeaderProps {
-  selectedCompany: string;
-  setSelectedCompany: (value: string) => void;
-  searchTerm: string;
-  setSearchTerm: (value: string) => void;
-  companies: string[];
-}
-
 const AdminDashboardHeader = ({
   selectedCompany,
   setSelectedCompany,
   searchTerm,
   setSearchTerm,
   companies
-}: AdminDashboardHeaderProps) => {
+}) => {
   return (
     <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
       <div>

@@ -1,16 +1,8 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-
-export type User = {
-  id: string;
-  username: string;
-  email: string;
-  role: 'user' | 'admin';
-  company?: string; // Company association for the user
-};
+import React, { createContext, useContext, useState } from 'react';
 
 // Mock company emails for forwarding
-export const companyEmails: Record<string, string> = {
+export const companyEmails = {
   'ABC Organization': 'admin@abcorg.com',
   'XYZ Company': 'admin@xyzcompany.com',
   'XXX Inc': 'admin@xxxinc.com',
@@ -18,18 +10,7 @@ export const companyEmails: Record<string, string> = {
   'GHI Enterprises': 'admin@ghient.com'
 };
 
-type AuthContextType = {
-  user: User | null;
-  login: (username: string, password: string, role: 'user' | 'admin', company?: string) => void;
-  signup: (username: string, email: string, password: string, company: string) => void;
-  logout: () => void;
-  isAuthenticated: boolean;
-  isAdmin: boolean;
-  users: User[]; // Store all users (for demo purposes)
-  getCompanyEmail: (company: string) => string;
-};
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -39,13 +20,9 @@ export const useAuth = () => {
   return context;
 };
 
-type AuthProviderProps = {
-  children: ReactNode;
-};
-
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [users, setUsers] = useState<User[]>([
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [users, setUsers] = useState([
     // Pre-populated super admin user
     { 
       id: 'superadmin', 
@@ -78,11 +55,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     },
   ]);
 
-  const signup = (username: string, email: string, password: string, company: string) => {
+  const signup = (username, email, password, company) => {
     // In a real app, this would validate against a backend
     // For demo purposes, we'll simulate a successful signup
     const userId = Math.random().toString(36).substring(2, 10);
-    const newUser: User = { 
+    const newUser = { 
       id: userId, 
       username, 
       email,
@@ -94,7 +71,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setUser(newUser); // Auto login after signup
   };
 
-  const login = (username: string, password: string, role: 'user' | 'admin', company?: string) => {
+  const login = (username, password, role, company) => {
     // In a real app, this would validate against a backend
     // For demo purposes, check if user exists in our local "database"
     const foundUser = users.find(u => u.username === username);
@@ -104,11 +81,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     } else {
       // If user not found, create a temporary one (for demo purposes)
       const userId = Math.random().toString(36).substring(2, 10);
-      const tempUser: User = { 
+      const tempUser = { 
         id: userId, 
         username, 
         email: '', 
-        role: role as 'user' | 'admin', 
+        role: role, 
         company 
       };
       setUser(tempUser);
@@ -123,7 +100,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const isAdmin = user?.role === 'admin';
 
   // Helper function to get company email
-  const getCompanyEmail = (company: string): string => {
+  const getCompanyEmail = (company) => {
     return companyEmails[company] || 'contact@company.com';
   };
 

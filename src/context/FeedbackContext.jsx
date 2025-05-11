@@ -1,36 +1,7 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { User } from './AuthContext';
+import React, { createContext, useContext, useState } from 'react';
 
-export type FeedbackCategory = 'complaint' | 'suggestion' | 'compliment';
-
-export type FeedbackStatus = 'pending' | 'reviewed' | 'resolved';
-
-export type Feedback = {
-  id: string;
-  userId: string;
-  username: string; // Add username for easier identification
-  entity: string;
-  company: string; // Add company association
-  category: FeedbackCategory;
-  description: string;
-  contactEmail: string;
-  status: FeedbackStatus;
-  createdAt: Date;
-  resolvedAt: Date | null;
-  adminResponse: string | null;
-};
-
-type FeedbackContextType = {
-  feedbacks: Feedback[];
-  addFeedback: (feedback: Omit<Feedback, 'id' | 'createdAt' | 'status' | 'resolvedAt' | 'adminResponse'>) => void;
-  getUserFeedbacks: (userId: string) => Feedback[];
-  getCompanyFeedbacks: (company: string) => Feedback[];
-  getAllFeedbacks: () => Feedback[]; // New function to get all feedbacks
-  updateFeedbackStatus: (feedbackId: string, status: FeedbackStatus, adminResponse?: string) => void;
-};
-
-const FeedbackContext = createContext<FeedbackContextType | undefined>(undefined);
+const FeedbackContext = createContext(undefined);
 
 export const useFeedback = () => {
   const context = useContext(FeedbackContext);
@@ -40,12 +11,8 @@ export const useFeedback = () => {
   return context;
 };
 
-type FeedbackProviderProps = {
-  children: ReactNode;
-};
-
-export const FeedbackProvider = ({ children }: FeedbackProviderProps) => {
-  const [feedbacks, setFeedbacks] = useState<Feedback[]>([
+export const FeedbackProvider = ({ children }) => {
+  const [feedbacks, setFeedbacks] = useState([
     {
       id: '1',
       userId: 'user1',
@@ -90,8 +57,8 @@ export const FeedbackProvider = ({ children }: FeedbackProviderProps) => {
     }
   ]);
 
-  const addFeedback = (newFeedback: Omit<Feedback, 'id' | 'createdAt' | 'status' | 'resolvedAt' | 'adminResponse'>) => {
-    const feedback: Feedback = {
+  const addFeedback = (newFeedback) => {
+    const feedback = {
       ...newFeedback,
       id: Math.random().toString(36).substring(2, 10),
       createdAt: new Date(),
@@ -102,11 +69,11 @@ export const FeedbackProvider = ({ children }: FeedbackProviderProps) => {
     setFeedbacks([...feedbacks, feedback]);
   };
 
-  const getUserFeedbacks = (userId: string) => {
+  const getUserFeedbacks = (userId) => {
     return feedbacks.filter(feedback => feedback.userId === userId);
   };
 
-  const getCompanyFeedbacks = (company: string) => {
+  const getCompanyFeedbacks = (company) => {
     return feedbacks.filter(feedback => feedback.company === company);
   };
   
@@ -114,7 +81,7 @@ export const FeedbackProvider = ({ children }: FeedbackProviderProps) => {
     return [...feedbacks].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   };
 
-  const updateFeedbackStatus = (feedbackId: string, status: FeedbackStatus, adminResponse?: string) => {
+  const updateFeedbackStatus = (feedbackId, status, adminResponse) => {
     setFeedbacks(feedbacks.map(feedback => {
       if (feedback.id === feedbackId) {
         return {

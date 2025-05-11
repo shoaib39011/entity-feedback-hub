@@ -1,26 +1,18 @@
 
 import React from "react";
-import { Feedback } from "@/context/FeedbackContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AdminFeedbackItem from "./AdminFeedbackItem";
 import { BadgeAlert, BadgeCheck, BadgeInfo } from "lucide-react";
-
-interface AdminFeedbackTabsProps {
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
-  filteredFeedbacks: Feedback[];
-  adminFeedbacks: Feedback[];
-}
 
 const AdminFeedbackTabs = ({
   activeTab,
   setActiveTab,
   filteredFeedbacks,
   adminFeedbacks
-}: AdminFeedbackTabsProps) => {
+}) => {
   
-  const getCategoryCount = (category: string) => {
+  const getCategoryCount = (category) => {
     return adminFeedbacks.filter((feedback) => feedback.category === category).length;
   };
 
@@ -58,7 +50,7 @@ const AdminFeedbackTabs = ({
           <CardContent>
             <div className="space-y-4">
               {filteredFeedbacks.length > 0 ? (
-                filteredFeedbacks.map((feedback: Feedback) => (
+                filteredFeedbacks.map((feedback) => (
                   <AdminFeedbackItem key={feedback.id} feedback={feedback} />
                 ))
               ) : (

@@ -1,15 +1,10 @@
 
 import React from "react";
-import { Feedback } from "@/context/FeedbackContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { BadgeInfo, BadgeAlert, BadgeCheck } from "lucide-react";
 
-interface AdminStatCardsProps {
-  adminFeedbacks: Feedback[];
-}
-
-const AdminStatCards = ({ adminFeedbacks }: AdminStatCardsProps) => {
-  const getStatusCount = (status: string) => {
+const AdminStatCards = ({ adminFeedbacks }) => {
+  const getStatusCount = (status) => {
     return adminFeedbacks.filter((feedback) => feedback.status === status).length;
   };
   
